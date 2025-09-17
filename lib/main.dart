@@ -28,11 +28,11 @@ class ProfilesPage extends StatefulWidget{
 
   class _ProfilePageState extends State<ProfilesPage> {
 
-    List<ProfileModel> profiles = [
-      // ProfileModel(nome: "Gabriel", imagem: "fallen.webp"),
-      ProfileModel(nome: "Mouse Pad Fallen", imagem: "mousepad_Fallen.jpg", valor: "1233"),
-      ProfileModel(nome: "Camisa Furia", imagem: "Camisa_FUria.jpg", valor: "1233"),
-      ProfileModel(nome: "Headset Fallen", imagem: "headset-pantera-pro-v2-roxo-10.jpg",valor: "4533"),
+    List<ProductModel> profiles = [
+      // ProductModel(nome: "Gabriel", imagem: "fallen.webp"),
+      ProductModel(nome: "Mouse Pad Fallen", imagem: "mousepad_Fallen.jpg", valor: "Preço: 100,00", estoque: "Estoque: 10 Unidade"),
+      ProductModel(nome: "Camisa Furia", imagem: "Camisa_FUria.jpg", valor: "Preço: 399,99", estoque: "Estoque: 5 Unidade"),
+      ProductModel(nome: "Headset Fallen", imagem: "headset-pantera-pro-v2-roxo-10.jpg",valor: "Preço: 299,99", estoque: "Estoque: 1 Unidade"),
     ];
     int currentIndex = 0;
 
@@ -72,29 +72,17 @@ class ProfilesPage extends StatefulWidget{
                         "assets/${profiles[currentIndex].imagem}"
                     ),
                       Text(profiles[currentIndex].nome,style: TextStyle(fontSize: 24)),
+                      
                       Row(
                         children: [
-                          Text(profiles[currentIndex].valor,style: TextStyle(fontSize: 24)),
-                        ]
+                          
+                        ],
                       ),
-                      //Botao de seguir usuario
-                      ElevatedButton(onPressed: () {
-                        setState(() {
-                           if(profiles[currentIndex].seguindo == true){
-                          profiles[currentIndex].seguindo = false;
-                          }else {
-                            profiles[currentIndex].seguindo = true;
-                          }
-                        });
-                      }, child: Text(
-                        profiles[currentIndex].seguindo == false
-                          ? "Reservar"
-                          : "Deixar de Seguir",
-                      ),
-                    ),
+                      //Botao de seguir usuari
                   ],
                 ),
                 Spacer(),
+                
                 //Botao de navegação para direita
                 TextButton(onPressed: () {
                   setState(() {
@@ -108,8 +96,21 @@ class ProfilesPage extends StatefulWidget{
               ]
             ),
             SizedBox(height: 44),
-                    ElevatedButton(onPressed: () async{
-                      List<ProfileModel> usuariosSeguidos = [];
+            Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(profiles[currentIndex].valor,style: TextStyle(fontSize: 24)),
+                          Spacer(),
+                          Text(profiles[currentIndex].estoque,style: TextStyle(fontSize: 24)),
+                        ]
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            ElevatedButton(onPressed: () {}, child: Text('Reservar')),
+                            Spacer(),
+                            ElevatedButton(onPressed: () async{
+                      List<ProductModel> usuariosSeguidos = [];
                       for (var profile in profiles) {
                         if (profile.seguindo == true) {
                           usuariosSeguidos.add(profile);
@@ -124,6 +125,8 @@ class ProfilesPage extends StatefulWidget{
                     }, 
                     child: Text("Comprar")),
                     ],
+                      ),
+          ]           
         )
       ),
     );
@@ -144,7 +147,7 @@ class _ProfilesFollowingPageState extends State<ProfilesFollowingPage>{
   Widget build(BuildContext context) {
 
     final argumentos = ModalRoute.of(context)!.settings.arguments as Map; 
-    final usuariosSeguidos = argumentos["usuariosSeguidos"] as List<ProfileModel>;
+    final usuariosSeguidos = argumentos["usuariosSeguidos"] as List<ProductModel>;
     return Scaffold(
       appBar: AppBar(title: Text('Perfis que você está seguindo')),
       body: ListView.builder(
@@ -168,17 +171,19 @@ class _ProfilesFollowingPageState extends State<ProfilesFollowingPage>{
   }
 }
 
-class ProfileModel {
+class ProductModel {
   String nome;
   String imagem;
   String valor;
+  String estoque;
   bool seguindo;
 
-  ProfileModel(
+  ProductModel(
     {
       required this.nome,
       required this.imagem,
       required this.valor,
+      required this.estoque,
       this.seguindo = false,
     }
   );
