@@ -12,7 +12,8 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       routes: {
         "/ProfilesPage": (context) => ProfilesPage(),
-        "/ProfilesFollowingPage": (context) => ProfilesFollowingPage(),
+        "/ShopingMarket": (context) => ShopingMarket(),
+        "/ReservaPage": (context) => ReservaPage(),
       },
       home: ProfilesPage());
   }
@@ -35,6 +36,8 @@ class ProfilesPage extends StatefulWidget{
       ProductModel(nome: "Headset Fallen", imagem: "headset-pantera-pro-v2-roxo-10.jpg",valor: "Preço: 299,99", estoque: "Estoque: 1 Unidade"),
     ];
     int currentIndex = 0;
+
+    List<ProductModel> carrinhoDeCompras = [];
 
   @override
   Widget build(BuildContext context){
@@ -99,33 +102,54 @@ class ProfilesPage extends StatefulWidget{
             Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
+                          SizedBox(width: 24,),
                           Text(profiles[currentIndex].valor,style: TextStyle(fontSize: 24)),
                           Spacer(),
                           Text(profiles[currentIndex].estoque,style: TextStyle(fontSize: 24)),
+                          SizedBox(width: 24,),
                         ]
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
+                            SizedBox(width: 48,),
                             ElevatedButton(onPressed: () {}, child: Text('Reservar')),
                             Spacer(),
-                            ElevatedButton(onPressed: () async{
-                      List<ProductModel> usuariosSeguidos = [];
-                      for (var profile in profiles) {
-                        if (profile.seguindo == true) {
-                          usuariosSeguidos.add(profile);
-                        } 
-                      }
-                      await Navigator.pushNamed(context, "/ProfilesFollowingPage",
-                      arguments: {"usuariosSeguidos": usuariosSeguidos},
-                      );
-
-                      setState(() {
-                      });
+                            ElevatedButton(onPressed: () {
+                      // Pega o produto que está na tela
+                      final product = profiles[currentIndex];
+                      // Adiciona ele na lista do carrinho
+                      carrinhoDeCompras.add(product);
                     }, 
                     child: Text("Comprar")),
+                    SizedBox(width: 48,),
+                    SizedBox(height: 100,)
                     ],
                       ),
+          Spacer(),
+          Divider(),
+          Row(
+            children: [
+              Spacer(),
+              IconButton(onPressed: () {
+                Navigator.pushNamed(
+                    context, 
+                    "/ReservaPage",
+                  );
+              }, icon: Icon(Icons.list_sharp)),
+              Spacer(),
+              IconButton(
+                onPressed: () {
+                  Navigator.pushNamed(
+                    context, 
+                    "/ShopingMarket",
+                  );
+                }, 
+                icon: Icon(Icons.shopping_cart_checkout_outlined)
+              ),
+              Spacer(),
+            ],
+          )
           ]           
         )
       ),
@@ -133,40 +157,28 @@ class ProfilesPage extends StatefulWidget{
   }
 }
 
-class ProfilesFollowingPage extends StatefulWidget {
-  const ProfilesFollowingPage({super.key});
+class ShopingMarket extends StatefulWidget {
+  const ShopingMarket({super.key});
 
   @override
-  State<ProfilesFollowingPage> createState() => _ProfilesFollowingPageState();
+  State<ShopingMarket> createState() => _ShopingMarketState();
 
 }
 
-class _ProfilesFollowingPageState extends State<ProfilesFollowingPage>{
+class _ShopingMarketState extends State<ShopingMarket>{
 
   @override
   Widget build(BuildContext context) {
 
-    final argumentos = ModalRoute.of(context)!.settings.arguments as Map; 
-    final usuariosSeguidos = argumentos["usuariosSeguidos"] as List<ProductModel>;
     return Scaffold(
-      appBar: AppBar(title: Text('Perfis que você está seguindo')),
-      body: ListView.builder(
-        itemCount: usuariosSeguidos.length,
-        itemBuilder: (context, index) {
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: AssetImage("assets/${usuariosSeguidos[index].imagem}"),
-          ),
-          title: Text(usuariosSeguidos[index].nome),
-          trailing: IconButton(onPressed: () {
-            setState(() {
-              usuariosSeguidos[index].alternarSeguindo();
-              usuariosSeguidos.removeAt(index);
-            });
-          }, icon: Icon(Icons.delete_forever_outlined)),
-          );
-      }
-      ),
+      appBar: AppBar(title: Text('Carrinho de Compra')),
+      body: Center(
+        child: Row(
+          children: [
+            Text('data')
+          ],
+        ),
+      )
     );
   }
 }
@@ -195,6 +207,51 @@ class ProductModel {
     seguindo = true;
       }
   }
+
+}
+
+class ReservaPage extends StatefulWidget {
+  const ReservaPage({super.key});
+
+  @override
+  State<ReservaPage> createState() => _ReservaPageState();
+
+}
+
+class _ReservaPageState extends State<ReservaPage>{
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Scaffold(
+      appBar: AppBar(title: Text('Lista de Produtos')),
+      body: Center(
+        child: Row(
+          children: [
+            Text('data')
+          ],
+        ),
+      )
+    );
+  }
+}
+
+class ReservaModel {
+  String nome;
+  String imagem;
+  String valor;
+  String estoque;
+  bool seguindo;
+
+  ReservaModel(
+    {
+      required this.nome,
+      required this.imagem,
+      required this.valor,
+      required this.estoque,
+      this.seguindo = false,
+    }
+  );
 
 }
 
